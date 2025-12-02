@@ -1,0 +1,298 @@
+/* =========================================
+   1. VARIÁVEIS & TEMAS (LIGHT/DARK)
+   ========================================= */
+:root {
+    /* --- TEMA CLARO (PADRÃO) --- */
+    --primary-color: #C2185B;      /* Rosa MOKA */
+    --primary-hover: #ad1457;
+    
+    --bg-color: #f0f2f5;           /* Fundo da página */
+    --card-bg: #ffffff;            /* Fundo dos cards/modais */
+    --text-color: #212529;         /* Texto principal */
+    --text-muted: #6c757d;         /* Texto secundário */
+    --border-color: #dee2e6;       /* Bordas */
+    
+    /* Calendário */
+    --calendar-grid-line: #dee2e6;
+    --day-hover: #f8f9fa;
+    --day-text: #212529;
+    
+    /* Seleção (Azul) */
+    --blue-selected: #E3F2FD;
+    --blue-border: #2196F3;
+    --blue-text: #0d47a1;
+    
+    /* Layout */
+    --sidebar-width: 250px;
+}
+
+/* --- TEMA ESCURO (DARK MODE) --- */
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --text-muted: #b0b3b8;
+    --border-color: #444;
+    
+    --calendar-grid-line: #444;
+    --day-hover: #333;
+    --day-text: #e0e0e0;
+    
+    /* Ajuste do Azul no Escuro */
+    --blue-selected: #152e4d; 
+    --blue-border: #64b5f6;
+    --blue-text: #90caf9;
+}
+
+/* =========================================
+   2. ESTILOS GERAIS
+   ========================================= */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Elementos de Container (Cards, Modais) */
+.card, .modal-content, .form-container {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Títulos e Textos */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color);
+}
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Formulários (Inputs e Selects) */
+.form-control, .form-select {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+.form-control:focus, .form-select:focus {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(194, 24, 91, 0.25);
+}
+/* Placeholder cor */
+::placeholder { color: var(--text-muted) !important; opacity: 0.7; }
+
+/* Tabelas (DataTables) */
+.table {
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+.table-hover tbody tr:hover {
+    color: var(--text-color);
+    background-color: rgba(0,0,0,0.05);
+}
+[data-theme="dark"] .table-hover tbody tr:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+
+/* =========================================
+   3. SIDEBAR (MENU LATERAL)
+   ========================================= */
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+    background: var(--primary-color);
+    color: #fff;
+    transition: all 0.3s;
+    min-height: 100vh;
+}
+
+#sidebar.active {
+    margin-left: calc(var(--sidebar-width) * -1);
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: rgba(0,0,0,0.1);
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+}
+
+#sidebar ul li a {
+    padding: 15px 25px;
+    font-size: 1.1em;
+    display: block;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+#sidebar ul li a:hover, 
+#sidebar ul li.active a {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    border-left: 4px solid #fff;
+}
+
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+/* =========================================
+   4. CALENDÁRIO
+   ========================================= */
+.calendar-container {
+    border-radius: 8px; /* Leve arredondamento no container */
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: var(--calendar-grid-line);
+    border: 1px solid var(--calendar-grid-line);
+    gap: 1px; /* Cria as linhas da tabela */
+}
+
+.weekday {
+    background-color: #6c757d;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.calendar-day, .empty-day {
+    background-color: var(--card-bg);
+    color: var(--day-text);
+    min-height: 80px;
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+.calendar-day:hover:not(.holiday) {
+    background-color: var(--day-hover);
+}
+
+/* Dia Selecionado (Destaque Azul) */
+.calendar-day.selected {
+    background-color: var(--blue-selected) !important;
+    box-shadow: inset 0 0 0 2px var(--blue-border);
+    z-index: 1;
+}
+.calendar-day.selected span {
+    color: var(--blue-text);
+    font-weight: 800;
+}
+
+/* Feriados */
+.calendar-day.holiday {
+    background-color: rgba(211, 47, 47, 0.1); /* Vermelho transparente */
+    cursor: not-allowed;
+}
+.calendar-day.holiday::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: #d32f2f;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+.calendar-day.holiday small {
+    color: #d32f2f;
+}
+
+/* =========================================
+   5. BOTÕES DE HORÁRIO & UI
+   ========================================= */
+.time-btn {
+    width: 100%;
+    margin-bottom: 0;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.time-btn:hover {
+    background-color: var(--day-hover);
+    border-color: var(--text-muted);
+}
+
+.time-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Botões do Bootstrap Customizados */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+/* =========================================
+   6. LOADING OVERLAY & ANIMAÇÕES
+   ========================================= */
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Fundo escuro sempre */
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+/* Animação de entrada do Check de Sucesso */
+#successState i {
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Ajustes Responsivos */
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: calc(var(--sidebar-width) * -1);
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+}
