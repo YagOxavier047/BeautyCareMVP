@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melhore Seu Dia - MOKA Beauty</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Estilo para a citação ficar elegante */
+        .quote-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--bg-color) 100%);
+            border: 2px solid var(--border-color);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quote-icon {
+            font-size: 5rem;
+            color: var(--primary-color);
+            opacity: 0.2;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <nav id="sidebar">
+            <div class="sidebar-header d-flex justify-content-between align-items-center">
+                <h3 class="m-0 fw-bold">Bem Vindo</h3>
+                <i class="bi bi-chevron-left d-lg-none" id="mobileClose"></i>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li><a href="dashboard.html"><i class="bi bi-grid-fill me-2"></i> Dashboard</a></li>
+                <li><a href="agenda.html"><i class="bi bi-calendar-check me-2"></i> Agendamento</a></li>
+                <li><a href="meuPerfil.html"><i class="bi bi-person me-2"></i> Meu Perfil</a></li>
+                <li class="active"><a href="#"><i class="bi bi-emoji-smile-fill me-2"></i> Melhore Seu Dia</a></li>
+                <li><a href="historico.html"><i class="bi bi-clock-history me-2"></i> Histórico</a></li>
+                <li><a href="login.html"><i class="bi bi-box-arrow-left me-2"></i> Sair</a></li>
+            </ul>
+        </nav>
+
+        <div id="content">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <button type="button" id="sidebarCollapse" class="btn btn-danger shadow-sm">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <button type="button" id="themeToggle" class="btn btn-outline-secondary border-0"
+                        title="Alternar Tema">
+                        <i class="bi bi-moon-stars-fill"></i>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="me-2 fw-bold text-muted">Olá, Cliente</span>
+                    <div class="bg-white rounded-circle d-flex align-items-center justify-content-center border shadow-sm"
+                        style="width: 40px; height: 40px;">
+                        <i class="bi bi-person-fill-gear text-danger"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-fluid">
+
+                <h4 class="fw-bold mb-4">Dose Diária de Sabedoria</h4>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+
+                        <div class="card quote-card shadow-lg p-5 text-center">
+                            <i class="bi bi-quote quote-icon"></i>
+
+                            <div id="loadingState" class="d-none">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-2 text-muted">Buscando inspiração...</p>
+                            </div>
+
+                            <div id="quoteContent">
+                                <h2 class="fst-italic fw-light mb-4" id="adviceText">
+                                    "Click the button to get advice."
+                                </h2>
+                                <hr class="w-25 mx-auto mb-4 border-primary">
+
+                                <button id="btnNewAdvice" class="btn btn-primary btn-lg px-5 rounded-pill shadow-sm">
+                                    <i class="bi bi-shuffle me-2"></i> Nova Frase
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3 text-muted small">
+                            Powered by Advice Slip API
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/melhoreSeuDia.js"></script>
+
+</body>
+
+</html>

@@ -1,74 +1,98 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
-    // 0. LÓGICA DARK MODE (NOVO!)
+    // TRADUÇÃO DATATABLES (PT-BR)
     // ==========================================
+    const dataTablePTBR = {
+        "sEmptyTable": "Nenhum registro encontrado",
+        "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+        "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+        "sLengthMenu": "_MENU_ resultados por página",
+        "sLoadingRecords": "Carregando...",
+        "sProcessing": "Processando...",
+        "sZeroRecords": "Nenhum registro encontrado",
+        "sSearch": "Pesquisar",
+        "oPaginate": {
+            "sNext": "Próximo",
+            "sPrevious": "Anterior",
+            "sFirst": "Primeiro",
+            "sLast": "Último"
+        }
+    };
+
+    // ==========================================
+    // 0. AUTO-UPDATE & DARK MODE
+    // ==========================================
+    function updateAppointmentStatus() {
+        let stored = JSON.parse(localStorage.getItem('salonAppointments')) || [];
+        const now = new Date();
+        let hasChanges = false;
+        stored.forEach(app => {
+            if (app.status === 'Agendado') {
+                const [day, month, year] = app.date.split('/');
+                const [hour, minute] = app.time.split(':');
+                const appDate = new Date(year, month - 1, day, hour, minute);
+                if (appDate < now) {
+                    app.status = 'Concluído';
+                    hasChanges = true;
+                }
+            }
+        });
+        if (hasChanges) localStorage.setItem('salonAppointments', JSON.stringify(stored));
+    }
+    updateAppointmentStatus();
+
+    // Dark Mode
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
     const icon = themeToggle ? themeToggle.querySelector('i') : null;
 
-    // Função para aplicar o tema
     function applyTheme(theme) {
         if (theme === 'dark') {
             body.setAttribute('data-theme', 'dark');
-            if(icon) {
-                icon.classList.remove('bi-moon-stars-fill');
-                icon.classList.add('bi-sun-fill');
-            }
+            if(icon) icon.classList.replace('bi-moon-stars-fill', 'bi-sun-fill');
         } else {
             body.removeAttribute('data-theme');
-            if(icon) {
-                icon.classList.remove('bi-sun-fill');
-                icon.classList.add('bi-moon-stars-fill');
-            }
+            if(icon) icon.classList.replace('bi-sun-fill', 'bi-moon-stars-fill');
         }
     }
-
-    // 1. Verificar preferência salva ao carregar
     const savedTheme = localStorage.getItem('theme') || 'light';
     applyTheme(savedTheme);
 
-    // 2. Evento de Clique no botão
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
+            const current = body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            const newTheme = current === 'dark' ? 'light' : 'dark';
             applyTheme(newTheme);
             localStorage.setItem('theme', newTheme);
         });
     }
 
-
-    // ==========================================
-    // 1. CONFIGURAÇÕES & SIDEBAR
-    // ==========================================
     const sidebar = document.getElementById('sidebar');
     const sidebarCollapse = document.getElementById('sidebarCollapse');
-    if(sidebarCollapse) {
-        sidebarCollapse.addEventListener('click', () => sidebar.classList.toggle('active'));
-    }
+    if(sidebarCollapse) sidebarCollapse.addEventListener('click', () => sidebar.classList.toggle('active'));
 
     const preSelectedService = sessionStorage.getItem('preSelectedService');
     if (preSelectedService) {
-        const selectElement = document.querySelector('#bookingForm select');
-        if(selectElement) {
-            for (let i = 0; i < selectElement.options.length; i++) {
-                if (selectElement.options[i].text === preSelectedService || selectElement.options[i].value === preSelectedService) {
-                    selectElement.selectedIndex = i;
+        const select = document.querySelector('#bookingForm select');
+        if(select) {
+            // Varre options e optgroups
+            const options = select.getElementsByTagName('option');
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].text === preSelectedService || options[i].value === preSelectedService) {
+                    select.value = options[i].value; // Seleciona pelo valor
                     break;
                 }
             }
-            selectElement.classList.add('border-primary', 'shadow');
-            setTimeout(() => selectElement.classList.remove('border-primary', 'shadow'), 2000);
         }
         sessionStorage.removeItem('preSelectedService');
     }
 
     // ==========================================
-    // 2. VARIÁVEIS
+    // 1. CONFIGURAÇÕES & API
     // ==========================================
-    const apiKey = 'AwxkM+NAjWhPvUcRkCYcrw==PL26HNlrUQoqL7VY'; // ⚠️ CHAVE API
+    const apiKey = 'AwxkM+NAjWhPvUcRkCYcrw==PL26HNlrUQoqL7VY'; 
     const calendarGrid = document.getElementById('calendarGrid');
     const currentMonthYear = document.getElementById('currentMonthYear');
     const inputDate = document.getElementById('inputDate');
@@ -81,43 +105,38 @@ document.addEventListener('DOMContentLoaded', () => {
     let holidaysMap = new Set();
     let holidaysList = [];
 
-    // ==========================================
-    // 3. API FERIADOS
-    // ==========================================
     async function fetchHolidays() {
         try {
             const url = `https://api.api-ninjas.com/v1/holidays?country=BR`;
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: { 'X-Api-Key': apiKey, 'Content-Type': 'application/json' }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                holidaysMap.clear();
-                holidaysList = [];
+            const res = await fetch(url, { headers: { 'X-Api-Key': apiKey } });
+            if (res.ok) {
+                const data = await res.json();
+                holidaysMap.clear(); holidaysList = [];
                 data.forEach(h => {
-                    const datePT = h.date.split('-').reverse().join('/');
-                    holidaysMap.add(datePT);
-                    holidaysList.push([datePT, h.name]);
+                    const d = h.date.split('-').reverse().join('/');
+                    holidaysMap.add(d); holidaysList.push([d, h.name]);
                 });
                 updateHolidayTable();
             }
-        } catch (error) { console.error('Erro API:', error); }
+        } catch (e) { console.error(e); }
         renderCalendar();
     }
 
     function updateHolidayTable() {
-        if ($.fn.DataTable.isDataTable('#tabelaFeriados')) { $('#tabelaFeriados').DataTable().destroy(); }
+        if ($.fn.DataTable.isDataTable('#tabelaFeriados')) $('#tabelaFeriados').DataTable().destroy();
         $('#tabelaFeriados').DataTable({
-            data: holidaysList,
-            columns: [{ title: "Data" }, { title: "Feriado" }],
-            pageLength: 3, lengthChange: false, searching: false, info: false,
-            language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json' }
+            data: holidaysList, 
+            columns: [{title:"Data"}, {title:"Feriado"}],
+            pageLength: 3, 
+            lengthChange: false, 
+            searching: false, 
+            info: false,
+            language: dataTablePTBR // <--- AQUI ESTÁ A CORREÇÃO
         });
     }
 
     // ==========================================
-    // 4. RENDERIZAR CALENDÁRIO
+    // 2. CALENDÁRIO
     // ==========================================
     function renderCalendar() {
         calendarGrid.querySelectorAll('.calendar-day, .empty-day').forEach(el => el.remove());
@@ -127,6 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
         let adjustedIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        
+        const today = new Date();
+        today.setHours(0,0,0,0);
 
         for (let i = 0; i < adjustedIndex; i++) {
             const empty = document.createElement('div');
@@ -138,29 +160,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const dayCell = document.createElement('div');
             dayCell.classList.add('calendar-day');
             dayCell.innerHTML = `<span class="fs-5">${day}</span>`;
+            
             const dayString = `${String(day).padStart(2, '0')}/${String(currentMonth + 1).padStart(2, '0')}/${currentYear}`;
+            const dateCheck = new Date(currentYear, currentMonth, day);
+            dateCheck.setHours(0,0,0,0);
 
-            if (holidaysMap.has(dayString)) {
+            const isHoliday = holidaysMap.has(dayString);
+            const isPast = dateCheck < today;
+
+            if (isPast) {
+                dayCell.classList.add('past');
+                dayCell.title = "Indisponível (Passado)";
+            } else if (isHoliday) {
                 dayCell.classList.add('holiday');
-                dayCell.innerHTML += `<br><small style="font-size:0.6em; color:#d32f2f; line-height:1;">Feriado</small>`;
+                dayCell.innerHTML += `<br><small style="font-size:0.6em">Feriado</small>`;
             } else {
                 dayCell.addEventListener('click', () => {
                     document.querySelectorAll('.calendar-day.selected').forEach(el => el.classList.remove('selected'));
                     dayCell.classList.add('selected');
                     inputDate.value = dayString;
-                    generateTimeSlots(); 
+                    generateTimeSlots();
                 });
             }
             calendarGrid.appendChild(dayCell);
         }
     }
 
-    // ==========================================
-    // 5. HORÁRIOS
-    // ==========================================
     function generateTimeSlots() {
-        hoursGrid.innerHTML = '';
-        selectedTimeInput.value = '';
+        hoursGrid.innerHTML = ''; selectedTimeInput.value = '';
         for (let h = 9; h <= 20; h++) {
             const time = `${String(h).padStart(2, '0')}:00`;
             const btn = document.createElement('button');
@@ -175,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 6. SUBMIT
+    // 3. SUBMIT
     // ==========================================
     const bookingForm = document.getElementById('bookingForm');
     const loadingOverlay = document.getElementById('loadingOverlay');

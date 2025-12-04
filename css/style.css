@@ -30,15 +30,14 @@
 [data-theme="dark"] {
     --bg-color: #121212;
     --card-bg: #1e1e1e;
-    --text-color: #e0e0e0;
+    --text-color: #ffffff;
     --text-muted: #b0b3b8;
     --border-color: #444;
     
     --calendar-grid-line: #444;
     --day-hover: #333;
-    --day-text: #e0e0e0;
+    --day-text: #ffffff;
     
-    /* Ajuste do Azul no Escuro */
     --blue-selected: #152e4d; 
     --blue-border: #64b5f6;
     --blue-text: #90caf9;
@@ -55,22 +54,19 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Elementos de Container (Cards, Modais) */
-.card, .modal-content, .form-container {
+/* Containers */
+.card, .modal-content, .form-container, .dashboard-card {
     background-color: var(--card-bg);
     border-color: var(--border-color);
     color: var(--text-color);
 }
 
-/* Títulos e Textos */
-h1, h2, h3, h4, h5, h6 {
-    color: var(--text-color);
-}
-.text-muted {
-    color: var(--text-muted) !important;
-}
+/* Tipografia */
+h1, h2, h3, h4, h5, h6 { color: var(--text-color); }
+.text-muted { color: var(--text-muted) !important; }
+[data-theme="dark"] .text-muted { color: #b0b3b8 !important; }
 
-/* Formulários (Inputs e Selects) */
+/* Formulários */
 .form-control, .form-select {
     background-color: var(--card-bg);
     border-color: var(--border-color);
@@ -82,30 +78,27 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.25rem rgba(194, 24, 91, 0.25);
 }
-/* Placeholder cor */
-::placeholder { color: var(--text-muted) !important; opacity: 0.7; }
+[data-theme="dark"] ::placeholder { color: #888 !important; opacity: 1; }
 
-/* Tabelas (DataTables) */
+/* Tabelas */
 .table {
     color: var(--text-color);
     border-color: var(--border-color);
+    --bs-table-bg: transparent;
 }
-.table-hover tbody tr:hover {
-    color: var(--text-color);
-    background-color: rgba(0,0,0,0.05);
-}
-[data-theme="dark"] .table-hover tbody tr:hover {
-    background-color: rgba(255,255,255,0.05);
+.table-hover tbody tr:hover { background-color: rgba(0,0,0,0.05); }
+[data-theme="dark"] .table-hover tbody tr:hover { background-color: rgba(255,255,255,0.05); }
+[data-theme="dark"] .table th, 
+[data-theme="dark"] .table td {
+    color: #ffffff !important;
+    background-color: transparent !important;
+    border-color: #444;
 }
 
 /* =========================================
    3. SIDEBAR (MENU LATERAL)
    ========================================= */
-.wrapper {
-    display: flex;
-    width: 100%;
-    align-items: stretch;
-}
+.wrapper { display: flex; width: 100%; align-items: stretch; position: relative; }
 
 #sidebar {
     min-width: var(--sidebar-width);
@@ -114,21 +107,11 @@ h1, h2, h3, h4, h5, h6 {
     color: #fff;
     transition: all 0.3s;
     min-height: 100vh;
+    z-index: 1000; /* Fica acima do conteúdo */
 }
 
-#sidebar.active {
-    margin-left: calc(var(--sidebar-width) * -1);
-}
-
-#sidebar .sidebar-header {
-    padding: 20px;
-    background: rgba(0,0,0,0.1);
-}
-
-#sidebar ul.components {
-    padding: 20px 0;
-}
-
+#sidebar .sidebar-header { padding: 20px; background: rgba(0,0,0,0.1); }
+#sidebar ul.components { padding: 20px 0; }
 #sidebar ul li a {
     padding: 15px 25px;
     font-size: 1.1em;
@@ -137,9 +120,7 @@ h1, h2, h3, h4, h5, h6 {
     text-decoration: none;
     transition: 0.2s;
 }
-
-#sidebar ul li a:hover, 
-#sidebar ul li.active a {
+#sidebar ul li a:hover, #sidebar ul li.active a {
     color: #fff;
     background: rgba(255,255,255,0.1);
     border-left: 4px solid #fff;
@@ -152,21 +133,22 @@ h1, h2, h3, h4, h5, h6 {
     transition: all 0.3s;
 }
 
+/* LOGICA DE TOGGLE DESKTOP (Padrão) */
+/* Se tiver a classe .active, ele esconde a sidebar jogando pra esquerda */
+#sidebar.active { margin-left: calc(var(--sidebar-width) * -1); }
+
 /* =========================================
    4. CALENDÁRIO
    ========================================= */
-.calendar-container {
-    border-radius: 8px; /* Leve arredondamento no container */
-}
+.calendar-container { border-radius: 8px; overflow: hidden; }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     background-color: var(--calendar-grid-line);
     border: 1px solid var(--calendar-grid-line);
-    gap: 1px; /* Cria as linhas da tabela */
+    gap: 1px; 
 }
-
 .weekday {
     background-color: #6c757d;
     color: white;
@@ -175,7 +157,6 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
     font-size: 0.9rem;
 }
-
 .calendar-day, .empty-day {
     background-color: var(--card-bg);
     color: var(--day-text);
@@ -185,49 +166,33 @@ h1, h2, h3, h4, h5, h6 {
     position: relative;
     transition: background-color 0.2s;
 }
+.calendar-day:hover:not(.holiday):not(.past) { background-color: var(--day-hover); }
 
-.calendar-day:hover:not(.holiday) {
-    background-color: var(--day-hover);
-}
-
-/* Dia Selecionado (Destaque Azul) */
+/* Estados do Dia */
 .calendar-day.selected {
     background-color: var(--blue-selected) !important;
     box-shadow: inset 0 0 0 2px var(--blue-border);
-    z-index: 1;
 }
-.calendar-day.selected span {
-    color: var(--blue-text);
-    font-weight: 800;
-}
+.calendar-day.selected span { color: var(--blue-text); font-weight: 800; }
 
-/* Feriados */
-.calendar-day.holiday {
-    background-color: rgba(211, 47, 47, 0.1); /* Vermelho transparente */
-    cursor: not-allowed;
-}
+.calendar-day.holiday { background-color: rgba(211, 47, 47, 0.1); cursor: not-allowed; }
 .calendar-day.holiday::after {
-    content: '';
-    display: block;
-    width: 6px;
-    height: 6px;
-    background-color: #d32f2f;
-    border-radius: 50%;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+    content: ''; display: block; width: 6px; height: 6px;
+    background-color: #d32f2f; border-radius: 50%;
+    position: absolute; bottom: 10px; right: 10px;
 }
-.calendar-day.holiday small {
-    color: #d32f2f;
+.calendar-day.holiday small { color: #d32f2f; }
+
+.calendar-day.past {
+    background-color: #e9ecef; color: #adb5bd; cursor: not-allowed; opacity: 0.6;
 }
+[data-theme="dark"] .calendar-day.past { background-color: #252525; color: #555; }
 
 /* =========================================
-   5. BOTÕES DE HORÁRIO & UI
+   5. UI ELEMENTS & DASHBOARD
    ========================================= */
 .time-btn {
-    width: 100%;
-    margin-bottom: 0;
-    padding: 10px;
+    width: 100%; padding: 10px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     background-color: var(--card-bg);
@@ -235,64 +200,97 @@ h1, h2, h3, h4, h5, h6 {
     transition: all 0.2s;
     font-weight: 500;
 }
-
-.time-btn:hover {
-    background-color: var(--day-hover);
-    border-color: var(--text-muted);
-}
-
+.time-btn:hover { background-color: var(--day-hover); border-color: var(--text-muted); }
 .time-btn.active {
     background-color: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
 }
 
-/* Botões do Bootstrap Customizados */
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    border-color: var(--primary-hover);
-}
-
-/* =========================================
-   6. LOADING OVERLAY & ANIMAÇÕES
-   ========================================= */
+/* Loading */
 #loadingOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Fundo escuro sempre */
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
     z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     backdrop-filter: blur(5px);
 }
+#successState i { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-/* Animação de entrada do Check de Sucesso */
-#successState i {
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+/* Imagens Dark Mode */
+[data-theme="dark"] img { filter: brightness(0.85); transition: filter 0.3s; }
 
-@keyframes popIn {
-    0% { transform: scale(0); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-/* Ajustes Responsivos */
+/* =============================================================
+   6. RESPONSIVIDADE (MOBILE / CELULAR)
+   ============================================================= */
 @media (max-width: 768px) {
+    
+    /* A. Sidebar no Mobile: Escondida por padrão */
     #sidebar {
-        margin-left: calc(var(--sidebar-width) * -1);
+        margin-left: -250px; /* Começa fora da tela */
+        position: fixed; /* Flutua sobre o conteúdo */
+        height: 100%;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.5);
     }
+    
+    /* B. Sidebar Ativa: Entra na tela */
     #sidebar.active {
         margin-left: 0;
     }
-    #sidebarCollapse span {
-        display: none;
+
+    /* C. Sombra no fundo quando menu abre (Overlay) */
+    #sidebar.active + #content::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5); /* Fundo preto transparente */
+        z-index: 999;
+    }
+
+    /* D. Ajuste do Botão de Fechar no Mobile */
+    #mobileClose {
+        display: block; /* Garante que o ícone apareça */
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+    /* E. Conteúdo ocupa 100% */
+    #content {
+        width: 100%;
+        padding: 15px;
+    }
+
+    /* F. Ajustes do Calendário Mobile */
+    .calendar-day, .empty-day {
+        min-height: 60px; /* Altura menor */
+        padding: 5px;
+        font-size: 0.9rem;
+    }
+    .weekday {
+        font-size: 0.75rem; /* Fonte menor no cabeçalho */
+        padding: 5px 0;
+    }
+    .calendar-container {
+        padding: 10px !important; /* Menos espaçamento interno */
+    }
+
+    /* G. Títulos e Cards */
+    h3 { font-size: 1.5rem; }
+    h4 { font-size: 1.3rem; }
+    
+    .card {
+        margin-bottom: 15px; /* Espaço entre cards empilhados */
+    }
+
+    /* H. Tabelas com Scroll Horizontal */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* I. Botão Toggle Dark Mode */
+    #themeToggle {
+        margin-left: 10px;
     }
 }

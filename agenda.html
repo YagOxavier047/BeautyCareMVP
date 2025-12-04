@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agendamento - MOKA Beauty</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
@@ -18,11 +19,15 @@
             <i class="bi bi-chevron-left d-lg-none" id="mobileClose"></i> 
         </div>
         <ul class="list-unstyled components">
-            <li class="active"><a href="#"><i class="bi bi-calendar-check me-2"></i> Agendamento</a></li>
-            <li><a href="#"><i class="bi bi-person me-2"></i> Meu Perfil</a></li>
-            <li><a href="historico.html"><i class="bi bi-clock-history me-2"></i> Histórico</a></li>
-            <li><a href="login.html"><i class="bi bi-box-arrow-left me-2"></i> Sair</a></li>
-        </ul>
+    <li><a href="dashboard.html"><i class="bi bi-grid-fill me-2"></i> Dashboard</a></li>
+    <li><a href="agenda.html"><i class="bi bi-calendar-check me-2"></i> Agendamento</a></li>
+    <li><a href="meuPerfil.html"><i class="bi bi-person me-2"></i> Meu Perfil</a></li>
+    
+    <li><a href="melhoreSeuDia.html"><i class="bi bi-emoji-smile-fill me-2"></i> Melhore Seu Dia</a></li>
+    
+    <li><a href="historico.html"><i class="bi bi-clock-history me-2"></i> Histórico</a></li>
+    <li><a href="login.html"><i class="bi bi-box-arrow-left me-2"></i> Sair</a></li>
+</ul>
     </nav>
 
     <div id="content">
@@ -32,16 +37,14 @@
                 <button type="button" id="sidebarCollapse" class="btn btn-danger shadow-sm">
                     <i class="bi bi-list"></i>
                 </button>
-                
                 <button type="button" id="themeToggle" class="btn btn-outline-secondary border-0" title="Alternar Tema">
                     <i class="bi bi-moon-stars-fill"></i>
                 </button>
             </div>
-
             <div class="d-flex align-items-center">
                 <span class="me-2 fw-bold text-muted">Olá, Cliente</span>
                 <div class="bg-white rounded-circle d-flex align-items-center justify-content-center border shadow-sm" style="width: 40px; height: 40px;">
-                    <i class="bi bi-person text-danger"></i>
+                    <i class="bi bi-person-fill-gear text-danger"></i>
                 </div>
             </div>
         </div>
@@ -58,16 +61,7 @@
                                 <button id="nextMonth" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-right"></i></button>
                             </div>
                         </div>
-
-                        <div class="calendar-grid" id="calendarGrid">
-                            <div class="weekday">Segunda</div>
-                            <div class="weekday">Terça</div>
-                            <div class="weekday">Quarta</div>
-                            <div class="weekday">Quinta</div>
-                            <div class="weekday">Sexta</div>
-                            <div class="weekday">Sábado</div>
-                            <div class="weekday">Domingo</div>
-                        </div>
+                        <div class="calendar-grid" id="calendarGrid"></div>
                     </div>
 
                     <div class="card p-4 border-0 shadow-sm">
@@ -87,14 +81,29 @@
                                 <label class="form-label text-muted small text-uppercase">Dia Selecionado</label>
                                 <input type="text" id="inputDate" class="form-control fw-bold text-primary fs-5" readonly placeholder="Clique no calendário">
                             </div>
+                            
                             <div class="mb-3">
                                 <label class="form-label text-muted small text-uppercase">Serviço</label>
-                                <select class="form-select py-2" required>
+                                <select class="form-select py-2" required id="serviceSelect">
                                     <option selected disabled value="">Escolha o serviço...</option>
-                                    <option value="corte">Corte de Cabelo</option>
-                                    <option value="manicure">Manicure</option>
-                                    <option value="pedicure">Pedicure</option>
-                                    <option value="completo">Pacote Completo</option>
+                                    
+                                    <optgroup label="Cabelos">
+                                        <option value="Escova">Escova</option>
+                                        <option value="Progressiva">Progressiva</option>
+                                        <option value="Botox Capilar">Botox Capilar</option>
+                                        <option value="Alisamento">Alisamento</option>
+                                        <option value="Luzes">Luzes</option>
+                                        <option value="Corte de Cabelo">Corte de cabelo</option>
+                                        <option value="Penteados">Penteados</option>
+                                    </optgroup>
+
+                                    <optgroup label="Outros Serviços">
+                                        <option value="Cílios">Cílios</option>
+                                        <option value="Sobrancelha">Sobrancelha</option>
+                                        <option value="Maquiagem">Maquiagem</option>
+                                        <option value="Unhas das mãos">Unhas das mãos</option>
+                                        <option value="Unhas dos pés">Unhas dos pés</option>
+                                    </optgroup>
                                 </select>
                             </div>
                             <div class="mb-3">
