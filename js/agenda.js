@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             lengthChange: false, 
             searching: false, 
             info: false,
-            language: dataTablePTBR // <--- AQUI ESTÁ A CORREÇÃO
+            language: dataTablePTBR 
         });
     }
 
