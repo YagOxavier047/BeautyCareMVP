@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Redireciona para o login
             setTimeout(() => {
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }, 2000);
         });
     }
